@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Page</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-container {
+      max-width: 400px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      font-weight: bold;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .form-group button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password">
+      </div>
+      <div class="form-group">
+        <button type="submit">Login</button>
+      </div>
+      <div id="errorMessage" class="error-message"></div>
+    </form>
+  </div>
+
+  <script>
+    const apiUrl = 'https://prod-74.westus.logic.azure.com:443/workflows/c35875e861b241e9a2c081f4d9ded780/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tahqZUBU2jTDXBbKz8WjMkueBWPzdDaPbaYSi22MaQQ';
+
+    const loginForm = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('errorMessage');
+
+    const validateUser = async (event) => {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const requestData = {
+        username: username,
+        password: password
+      };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+        const data = await response.json();
+
+        // Process the response data
+        if (response.ok) {
+          if (data.valid === 'yes') {
+            console.log('User is valid');
+            console.log(data);
+            // Redirect to a new page or perform other actions for successful login
+            errorMessage.textContent = 'User is valid'; // Display a success message
+            errorMessage.style.color = 'green';
+          } else {
+            console.log('User is not valid');
+            console.log(data.valid);
+            // Display an error message or perform other actions for unsuccessful login
+            errorMessage.textContent = 'Invalid username or password'; // Display an error message
+            errorMessage.style.color = 'red';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+          }
+        } else {
+          console.log('Request failed with status:', response.status);
+          errorMessage.textContent = 'An error occurred. Please try again later.'; // Display an error message
+          errorMessage.style.color = 'red';
+          document.getElementById('username').value = '';
+          document.getElementById('password').value = '';
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+        errorMessage.textContent = 'An error occurred. Please try again later.'; // Display an error message
+        errorMessage.style.color = 'red';
+      }
+    };
+
+    loginForm.addEventListener('submit', validateUser);
+  </script>
+</body>
+</html>
