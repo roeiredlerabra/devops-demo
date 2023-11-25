@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Work Item Details</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<style>
+    .table-striped tbody tr:nth-of-type(odd):hover {
+        background-color: rgb(231, 25, 25);
+        /* Change to your desired hover background color */
+        cursor: pointer;
+        !important
+    }
+
+    tr.even:hover {
+        background-color: #983636;
+        /* Change to your desired hover color */
+        cursor: pointer;
+        !important
+    }
+</style>
+
+<body>
+    <table id="response-table" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Work Item Type</th>
+                <th>State</th>
+                <th>System.AssignedTo</th>
+                <th>Title</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be dynamically populated here -->
+        </tbody>
+    </table>
+
+    <!-- Modal for displaying work item details -->
+    <div class="modal fade" id="workItemModal" tabindex="-1" role="dialog" aria-labelledby="workItemModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="workItemModalLabel">Work Item Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="workItemDetails">
+                    <!-- Work item details will be dynamically populated here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Fetch data from the API endpoint
+            fetch('https://prod-179.westus.logic.azure.com:443/workflows/fde64084ea874d0f9efdead54552df50/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=xIk9Z-QEs1AVGFJKpQG1Yc0gD8eu07xjOm-iixnwds4')
+                .then(response => response.json())
+                .then(data => {
+                    // Update the table with the received data
+                    updateTable(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            function updateTable(data) {
+                // Get the table body element
+                var tableBody = $('#response-table tbody');
+
+                // Clear existing table rows
+                tableBody.empty();
+
+                // Iterate over the data and create table rows
+                data.forEach(item => {
+                    var row = $('<tr>');
+                    row.append('<td>' + item['System.Id'] + '</td>');
+                    row.append('<td>' + item['System.WorkItemType'] + '</td>');
+
+                    // Check if System.State is 'New' and set the background color accordingly
+                    if (item['System.State'] === 'New') {
+                        row.append('<td style="background-color: green;">' + item['System.State'] + '</td>');
+                    } else if (item['System.State'] === 'Closed') {
+                        row.append('<td style="background-color: yellow;">' + item['System.State'] + '</td>');
+                    } else {
+                        row.append('<td>' + item['System.State'] + '</td>');
+                    }
+                    if (item['System.AssignedTo']) {
+                        row.append('<td>' + item['System.AssignedTo'] + '</td>');
+                    } else {
+                        row.append('<td></td>');
+                    }
+                    
+                    row.append('<td>' + item['System.Title'] + '</td>');
+                    if (item['System.Description']) {
+                        row.append('<td>' + item['System.Description'] + '</td>');
+                    } else {
+                        row.append('<td></td>');
+                    }
+
+                    row.click(function () {
+                        // Display work item details in the modal
+                        showModal(item);
+                    });
+
+                    tableBody.append(row);
+                });
+
+                // Initialize DataTable
+                $('#response-table').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ]
+                });
+            }
+
+            function showModal(item) {
+  // Populate modal with work item details
+  var modalBody = $('#workItemDetails');
+  modalBody.empty();
+  modalBody.append('<p><strong>ID:</strong> ' + item['System.Id'] + '</p>');
+  modalBody.append('<p><strong>Work Item Type:</strong> ' + item['System.WorkItemType'] + '</p>');
+  modalBody.append('<p><strong>State:</strong> ' + item['System.State'] + '</p>');
+  modalBody.append('<p><strong>Title:</strong> ' + item['System.Title'] + '</p>');
+
+  // Check if Description field exists and is not null
+  if (item['System.Description']) {
+    modalBody.append('<p><strong>Description:</strong> ' + item['System.Description'] + '</p>');
+  }
+
+  // Show the modal
+  $('#workItemModal').modal('show');
+}
+        });
+    </script>
+</body>
+
+</html>
