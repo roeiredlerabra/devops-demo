@@ -8,6 +8,29 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <style>
+            #loader {
+            border: 12px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 12px solid #444444;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+        }
+ 
+        .center {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+ 
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     .table-striped tbody tr:nth-of-type(odd):hover {
         background-color: rgb(231, 25, 25);
         /* Change to your desired hover background color */
@@ -21,7 +44,7 @@
         cursor: pointer;
         !important
     }
-    body {
+    .bd {
       background-color: #f8f9fa;
       height: 100vh;
       display: flex;
@@ -75,8 +98,10 @@
 </style>
 
 <body>
+    <div id="loader" class="center"></div>
     <!-- Login Page -->
     <div id="login-page">
+        <div class="bd">
         <div class="login-container">
             <h2>Login</h2>
             <form id="loginForm">
@@ -93,7 +118,7 @@
                 </div>
                 <div id="errorMessage" class="error-message"></div>
             </form>
-        </div>
+        </div></div>
     </div>
 
     <!-- Second Page -->
@@ -212,10 +237,14 @@
 
             // Function to fetch data from the API and populate the table
             function fetchData() {
+                document.querySelector("#loader").style.display = "block";
+                document.querySelector("body").style.visibility = "hidden";
                 fetch('https://prod-179.westus.logic.azure.com:443/workflows/fde64084ea874d0f9efdead54552df50/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=xIk9Z-QEs1AVGFJKpQG1Yc0gD8eu07xjOm-iixnwds4')
                     .then(response => response.json())
                     .then(data => {
                         // Update the table with the received data
+                        document.querySelector("#loader").style.display = "none";
+                        document.querySelector("body").style.visibility = "visible";
                         updateTable(data);
                     })
                     .catch(error => {
@@ -292,6 +321,19 @@
                 }
             }
         });
+        document.onreadystatechange = function () {
+            if (document.readyState !== "complete") {
+                document.querySelector(
+                    "body").style.visibility = "hidden";
+                document.querySelector(
+                    "#loader").style.visibility = "visible";
+            } else {
+                document.querySelector(
+                    "#loader").style.display = "none";
+                document.querySelector(
+                    "body").style.visibility = "visible";
+            }
+        };
     </script>
 </body>
 
