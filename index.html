@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.2/dist/chart.min.js"></script>
 </head>
 <style>
             #loader {
@@ -107,6 +108,50 @@
     vertical-align: center;
     text-align: center;
 }
+.chart-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 300px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.chart-container {
+  flex: 1 1 50%;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  display: flex; /* Add this line */
+  align-items: center; /* Add this line */
+  justify-content: center; /* Add this line */
+}
+
+canvas {
+  max-width: 100%; /* Add this line */
+  max-height: 100%; /* Add this line */
+  display: block; /* Add this line */
+}
+
+.chart-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 0;
+}
+.custom-canvas {
+    display: block;
+    box-sizing: border-box;
+    /* width: 50% !important; */
+    /* height: 100% !important; */
+    max-width: auto!important;
+    max-height: 200px!important;
+}
 </style>
 
 <body>
@@ -146,6 +191,16 @@
 
     <!-- Second Page -->
     <div id="second-page" style="display: none;">
+        <div class="chart-wrapper">
+            <div class="chart-container">
+                <canvas id="chartCanvas" class="custom-canvas"></canvas>
+            </div>
+          
+            <div class="chart-container">
+                <canvas id="chartCanvas2" class="custom-canvas"></canvas>
+            </div>
+          </div>
+          
         <table id="response-table" class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -269,6 +324,7 @@
                         document.querySelector("#loader").style.display = "none";
                         document.querySelector("body").style.visibility = "visible";
                         updateTable(data);
+                        createCharts(data);
                     })
                     .catch(error => {
                         console.error('Error:', error);
@@ -357,6 +413,93 @@
                     "body").style.visibility = "visible";
             }
         };
+            // JSON data representing work items
+    
+    function createCharts(jsonData) {
+// Count the number of work items per work item type
+const workItemTypes = jsonData.map(item => item["System.WorkItemType"]);
+const workItemCounts = {};
+workItemTypes.forEach(type => {
+  workItemCounts[type] = (workItemCounts[type] || 0) + 1;
+});
+
+// Prepare data for the chart
+const labels = Object.keys(workItemCounts);
+const data = Object.values(workItemCounts);
+
+// Create the chart
+const ctx1 = document.getElementById("chartCanvas").getContext("2d");
+new Chart(ctx1, {
+  type: "bar",
+  data: {
+    labels: labels,
+    datasets: [{
+      label: "Number of Work Items",
+      data: data,
+      backgroundColor: "rgba(54, 162, 235, 0.5)",
+      borderColor: "rgba(54, 162, 235, 1)",
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        stepSize: 1
+      }
+    },
+    plugins: {
+      // This is a custom plugin to display data labels
+      labels: {
+        render: 'value',
+        fontColor: '#fff',
+        position: 'end',
+        backgroundColor: 'rgba(34, 139, 34, 0.6)',
+        borderColor: 'rgba(34, 139, 34, 1.0)',
+        borderWidth: 1,
+        borderRadius: 5,
+        formatter: (value) => {
+          return value + 'k';
+        }
+      }
+    }
+  }
+});
+
+// Count the number of open/active versus closed/resolved work items
+const workItemStates = jsonData.map(item => item["System.State"]);
+const openActiveCount = workItemStates.filter(state => state === "New" || state === "Active").length;
+const closedResolvedCount = workItemStates.filter(state => state === "Closed").length;
+
+// Create the chart
+const ctx2 = document.getElementById("chartCanvas2").getContext("2d");
+new Chart(ctx2, {
+  type: "pie",
+  data: {
+    labels: ["Open/Active", "Closed/Resolved"],
+    datasets: [{
+      data: [openActiveCount, closedResolvedCount],
+      backgroundColor: ["rgba(255, 99, 132, 0.5)", "rgba(54, 162, 235, 0.5)"],
+      borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom'
+      },
+      title: {
+        display: true,
+        text: 'Open/Active vs Closed/Resolved Work Items'
+      }
+    }
+  }
+})};
+    
 
     </script>
 </body>
