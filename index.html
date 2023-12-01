@@ -7,151 +7,185 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.2/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 </head>
 <style>
-            #loader {
-            border: 12px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 12px solid #444444;
-            width: 70px;
-            height: 70px;
-            animation: spin 1s linear infinite;
+    #loader {
+        border: 12px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 12px solid #444444;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
+
+    .center {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
         }
- 
-        .center {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: auto;
-        }
- 
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+    }
+
     .table-striped tbody tr:nth-of-type(odd):hover {
-        background-color: rgb(231, 25, 25);
+        background-color: rgb(177, 175, 175);
         /* Change to your desired hover background color */
         cursor: pointer;
         !important
     }
 
     tr.even:hover {
-        background-color: #983636;
+        background-color: rgb(177, 175, 175);
         /* Change to your desired hover color */
         cursor: pointer;
         !important
     }
+
     .bd {
-      background-color: #f8f9fa;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        background-color: #f8f9fa;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .login-container {
-      max-width: 400px;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #fff;
-      min-width: 300px;
+        max-width: 400px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+        min-width: 300px;
     }
 
     .login-container h2 {
-      text-align: center;
-      margin-bottom: 20px;
+        text-align: center;
+        margin-bottom: 20px;
     }
 
     .form-group {
-      margin-bottom: 20px;
+        margin-bottom: 20px;
     }
 
     .form-group label {
-      font-weight: bold;
-      text-align: center;
+        font-weight: bold;
+        text-align: center;
     }
 
     .form-group input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
     }
 
     .form-group button {
-      width: 100%;
-      padding: 10px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
     }
 
     .error-message {
-      color: red;
-      margin-top: 10px;
-      text-align: center;
+        color: red;
+        margin-top: 10px;
+        text-align: center;
     }
+
     .modal-body {
         text-align: right;
-}
-.dataTables_wrapper {
-    padding: 20px;
-}
-.table thead th {
-    vertical-align: center;
-    text-align: center;
-}
-.chart-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  max-height: 300px;
-  overflow: hidden;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  position: relative;
-}
+    }
 
-.chart-container {
-  flex: 1 1 50%;
-  padding: 20px;
-  box-sizing: border-box;
-  position: relative;
-  z-index: 1;
-  display: flex; /* Add this line */
-  align-items: center; /* Add this line */
-  justify-content: center; /* Add this line */
-}
+    .dataTables_wrapper {
+        padding: 20px;
+    }
 
-canvas {
-  max-width: 100%; /* Add this line */
-  max-height: 100%; /* Add this line */
-  display: block; /* Add this line */
-}
+    .table thead th {
+        vertical-align: center;
+        text-align: center;
+    }
 
-.chart-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.8);
-  z-index: 0;
-}
-.custom-canvas {
-    display: block;
-    box-sizing: border-box;
-    /* width: 50% !important; */
-    /* height: 100% !important; */
-    max-width: auto!important;
-    max-height: 200px!important;
-}
+    .chart-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        max-height: 300px;
+        overflow: hidden;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        position: relative;
+    }
+
+    .chart-container {
+        flex: 1 1 50%;
+        padding: 20px;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        /* Add this line */
+        align-items: center;
+        /* Add this line */
+        justify-content: center;
+        /* Add this line */
+    }
+
+    canvas {
+        max-width: 100%;
+        /* Add this line */
+        max-height: 100%;
+        /* Add this line */
+        display: block;
+        /* Add this line */
+    }
+
+    .chart-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 0;
+    }
+
+    .custom-canvas {
+        display: block;
+        box-sizing: border-box;
+        /* width: 50% !important; */
+        /* height: 100% !important; */
+        max-width: auto !important;
+        max-height: 200px !important;
+    }
+
+    .filter-table {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 16px;
+        line-height: 10px;
+    }
+
+    .filter-table input[type="date"] {
+        margin-right: 8px;
+    }
+
+    .filter-table button {
+        padding: 8px;
+    }
+
+    .filter-table label {
+        margin-right: 8px;
+    }
 </style>
 
 <body>
@@ -159,33 +193,38 @@ canvas {
     <!-- Login Page -->
     <div id="login-page">
         <div class="bd">
-        <div class="login-container">
-            <h2>כניסה למערכת</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <center><label for="username">שם משתמש</label></center>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" dir="ltr">
+            <div class="login-container">
+                <h2>כניסה למערכת</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <center><label for="username">שם משתמש</label></center>
+                        <input type="text" id="username" name="username" placeholder="Enter your username" dir="ltr">
+                    </div>
+                    <div class="form-group">
+                        <center><label for="password">סיסמא</label></center>
+                        <input type="password" id="password" name="password" placeholder="Enter your password"
+                            dir="ltr">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">כניסה</button>
+                    </div>
+                    <div id="errorMessage" class="error-message"></div>
+                </form>
+                <div class="image-container">
+                    <div class="image-wrapper">
+                        <center><a href="#"><img
+                                    src="https://evrotarget.com/wp-content/uploads/2022/02/MicrosoftTeams-image-92-1-1500x630.png"
+                                    alt="HTML tutorial" style="width:70%;"></a></center>
+                    </div>
+                    <div class="image-wrapper">
+                        <center><a href="#"><img
+                                    src="https://upload.wikimedia.org/wikipedia/he/thumb/b/b0/Abra_logo.svg/1280px-Abra_logo.svg.png"
+                                    alt="HTML tutorial" style="width:20%;"></a></center>
+                    </div>
                 </div>
-                <div class="form-group">
-                <center><label for="password">סיסמא</label></center>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" dir="ltr">
-                </div>
-                <div class="form-group">
-                    <button type="submit">כניסה</button>
-                </div>
-                <div id="errorMessage" class="error-message"></div>
-            </form>
-            <div class="image-container">
-                <div class="image-wrapper">
-                  <center><a href="#"><img src="https://evrotarget.com/wp-content/uploads/2022/02/MicrosoftTeams-image-92-1-1500x630.png" alt="HTML tutorial" style="width:70%;"></a></center>
-                </div>
-                <div class="image-wrapper">
-                  <center><a href="#"><img src="https://upload.wikimedia.org/wikipedia/he/thumb/b/b0/Abra_logo.svg/1280px-Abra_logo.svg.png" alt="HTML tutorial" style="width:20%;"></a></center>
-                </div>
-              </div>
-        </div>
+            </div>
 
-    </div>
+        </div>
 
     </div>
 
@@ -195,16 +234,23 @@ canvas {
             <div class="chart-container">
                 <canvas id="chartCanvas" class="custom-canvas"></canvas>
             </div>
-          
+
             <div class="chart-container">
                 <canvas id="chartCanvas2" class="custom-canvas"></canvas>
             </div>
-          </div>
-          
+        </div>
+        <div class="filter-table">
+            <label for="startDateInput">תאריך התחלה:</label>
+            <input type="date" id="startDateInput" placeholder="Start Date">
+            <label for="endDateInput">תאריך סיום:</label>
+            <input type="date" id="endDateInput" placeholder="End Date">
+            <button onclick="filterTable()">סינון</button>
+        </div>
         <table id="response-table" class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th>מספר מזהה</th>
+                    <th>תאריך יצירה</th>
                     <th>סוג</th>
                     <th>מצב</th>
                     <th>מוקצה אל</th>
@@ -341,13 +387,18 @@ canvas {
                     data.forEach(item => {
                         var row = $('<tr>');
                         row.append('<td>' + item['System.Id'] + '</td>');
+                        var createdDate = new Date(item['System.CreatedDate']);
+                        var formattedDate = createdDate.toISOString().slice(0, 10);
+                        row.append('<td>' + formattedDate + '</td>');
                         row.append('<td>' + item['System.WorkItemType'] + '</td>');
 
                         // Check if System.State is 'New' and set the background color accordingly
                         if (item['System.State'] === 'New') {
-                            row.append('<td style="background-color: green;">' + item['System.State'] + '</td>');
+                            row.append('<td style="background-color: #BAE7A9;">' + item['System.State'] + '</td>');
                         } else if (item['System.State'] === 'Closed') {
-                            row.append('<td style="background-color: yellow;">' + item['System.State'] + '</td>');
+                            row.append('<td style="background-color: #F1F56B;">' + item['System.State'] + '</td>');
+                        } else if (item['System.State'] === 'Active') {
+                            row.append('<td style="background-color: #6BC3F5;">' + item['System.State'] + '</td>');
                         } else {
                             row.append('<td>' + item['System.State'] + '</td>');
                         }
@@ -413,93 +464,127 @@ canvas {
                     "body").style.visibility = "visible";
             }
         };
-            // JSON data representing work items
-    
-    function createCharts(jsonData) {
-// Count the number of work items per work item type
-const workItemTypes = jsonData.map(item => item["System.WorkItemType"]);
-const workItemCounts = {};
-workItemTypes.forEach(type => {
-  workItemCounts[type] = (workItemCounts[type] || 0) + 1;
-});
+        // JSON data representing work items
 
-// Prepare data for the chart
-const labels = Object.keys(workItemCounts);
-const data = Object.values(workItemCounts);
+        function createCharts(jsonData) {
+            // Count the number of work items per work item type
+            const workItemTypes = jsonData.map(item => item["System.WorkItemType"]);
+            const workItemCounts = {};
+            workItemTypes.forEach(type => {
+                workItemCounts[type] = (workItemCounts[type] || 0) + 1;
+            });
 
-// Create the chart
-const ctx1 = document.getElementById("chartCanvas").getContext("2d");
-new Chart(ctx1, {
-  type: "bar",
-  data: {
-    labels: labels,
-    datasets: [{
-      label: "Number of Work Items",
-      data: data,
-      backgroundColor: "rgba(54, 162, 235, 0.5)",
-      borderColor: "rgba(54, 162, 235, 1)",
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true,
-        stepSize: 1
-      }
-    },
-    plugins: {
-      // This is a custom plugin to display data labels
-      labels: {
-        render: 'value',
-        fontColor: '#fff',
-        position: 'end',
-        backgroundColor: 'rgba(34, 139, 34, 0.6)',
-        borderColor: 'rgba(34, 139, 34, 1.0)',
-        borderWidth: 1,
-        borderRadius: 5,
-        formatter: (value) => {
-          return value + 'k';
-        }
+            // Prepare data for the chart
+            const labels = Object.keys(workItemCounts);
+            const data = Object.values(workItemCounts);
+
+            // Create the chart
+            const ctx1 = document.getElementById("chartCanvas").getContext("2d");
+            new Chart(ctx1, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Number of Work Items",
+                        data: data,
+                        backgroundColor: "rgba(54, 162, 235, 0.5)",
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        }
+                    },
+                    plugins: {
+                        // This is a custom plugin to display data labels
+                        labels: {
+                            render: 'value',
+                            fontColor: '#fff',
+                            position: 'end',
+                            backgroundColor: 'rgba(34, 139, 34, 0.6)',
+                            borderColor: 'rgba(34, 139, 34, 1.0)',
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            formatter: (value) => {
+                                return value + 'k';
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Count the number of open/active versus closed/resolved work items
+            const workItemStates = jsonData.map(item => item["System.State"]);
+            const openActiveCount = workItemStates.filter(state => state === "New" || state === "Active").length;
+            const closedResolvedCount = workItemStates.filter(state => state === "Closed").length;
+
+            // Create the chart
+            const ctx2 = document.getElementById("chartCanvas2").getContext("2d");
+            new Chart(ctx2, {
+                type: "pie",
+                data: {
+                    labels: ["Open/Active", "Closed/Resolved"],
+                    datasets: [{
+                        data: [openActiveCount, closedResolvedCount],
+                        backgroundColor: ["rgba(255, 99, 132, 0.5)", "rgba(54, 162, 235, 0.5)"],
+                        borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Open/Active vs Closed/Resolved Work Items'
+                        }
+                    }
+                }
+            })
+        };
+        function filterTable() {
+  var startDateString = $('#startDateInput').val();
+  var endDateString = $('#endDateInput').val();
+
+  // Check if the date inputs are empty
+  if (startDateString === '' || endDateString === '') {
+    $('#response-table tbody tr').show();
+    return;
+  }
+
+  // Parse the start and end date strings into Date objects
+  var startDate = new Date(startDateString);
+  var endDate = new Date(endDateString);
+
+  // Check if the parsed dates are valid
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    console.error('Invalid date format');
+    return;
+  }
+
+  var rows = $('#response-table tbody tr');
+
+  rows.each(function() {
+    var cell = $(this).find('td:nth-child(2)');
+    if (cell.length > 0) {
+      var date = new Date(cell.text());
+      if (date >= startDate && date <= endDate) {
+        $(this).show();
+      } else {
+        $(this).hide();
       }
     }
-  }
-});
-
-// Count the number of open/active versus closed/resolved work items
-const workItemStates = jsonData.map(item => item["System.State"]);
-const openActiveCount = workItemStates.filter(state => state === "New" || state === "Active").length;
-const closedResolvedCount = workItemStates.filter(state => state === "Closed").length;
-
-// Create the chart
-const ctx2 = document.getElementById("chartCanvas2").getContext("2d");
-new Chart(ctx2, {
-  type: "pie",
-  data: {
-    labels: ["Open/Active", "Closed/Resolved"],
-    datasets: [{
-      data: [openActiveCount, closedResolvedCount],
-      backgroundColor: ["rgba(255, 99, 132, 0.5)", "rgba(54, 162, 235, 0.5)"],
-      borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'bottom'
-      },
-      title: {
-        display: true,
-        text: 'Open/Active vs Closed/Resolved Work Items'
-      }
-    }
-  }
-})};
-    
+  });
+};
 
     </script>
 </body>
